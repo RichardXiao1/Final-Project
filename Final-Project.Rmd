@@ -6,8 +6,20 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+getwd()
 library(readxl)
-read_excel("energy.xlsx")
+library(dplyr)
+library(tidyverse)
+library(caret)
+library(psych)
+library(ggplot2)
+library(countrycode)
+life <-read_csv("C:/Users/richa/OneDrive/Documents/ST 558/Final Project/Final-Project/Life Expectancy Data.csv")
+
+
+summary <- describe(life)
+
+
 ```
 
 ## R Markdown
@@ -17,15 +29,166 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
-summary(cars)
+life <- life %>% rename(life_expectancy = `Life expectancy`, adult_mortality = `Adult Mortality`, infant_deaths = `infant deaths`, under_five_deaths = `under-five deaths`, hepatitis = `Hepatitis B`, hiv_aids = `HIV/AIDS`)
+
+Africa <-  c("Algeria","Angola", "Benin","Botswana", "Burkina Faso", "Central African Republic", "Burundi", "Côte d'Ivoire", "Cabo Verde", "Cameroon", "Chad", "Comoros", "Congo", "Democratic Republic of the Congo", "Djibouti", "Egypt", "Equatorial Guinea","Eritrea", "Gabon", "Gambia", "Ghana", "Guinea", "Guinea-Bissau", "Kenya", "Lesotho", "Liberia", "Libya", "Madagascar", "Malawi", "Mali", "Mauritania", "Mauritius", "Morocco", "Mozambique", "Namibia", "Niger", "Nigeria", "Rwanda", "Sao Tome and Principe", "Somalia", "Senegal", "Seychelles", "Sierra Leone", "South Africa
+", "South Sudan", "Sudan", "Togo", "Tunisia", "Uganda", "Swaziland", "United Republic of Tanzania","Zambia","Zimbabwe")
+Asia <- c("Afghanistan", "Armenia", "Azerbaijan", "Bahrain", "Bangladesh", "Bhutan", "Brunei Darussalam", "Cambodia", "China", "Cyprus", "Democratic People's Republic of Korea", "Georgia", "India", "Indonesia", "Iran (Islamic Republic of)
+", "Iraq", "Israel", "Japan", "Jordan", "Kazakhstan", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Lebanon", "Malaysia", "Maldives", "Mongolia", "Myanmar", "Nepal", "Oman", "Pakistan", "Philippines", "Qatar", "Republic of Korea", "Saudi Arabia", "Singapore", "Sri Lanka", "Syrian Arab Republic", "Tajikistan", "Thailand", "Timor-Leste", "Turkey", "Turkmenistan","United Arab Emirates","Uzbekistan", "Viet Nam", "Yemen")
+
+Europe <- c("Albania", "Austria","Belarus", "Belgium", "Bosnia and Herzegovina", "Bulgaria", "Croatia", "Czechia", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Montenegro", "Netherlands", "Monaco", "Norway", "Poland", "Portugal", "Republic of Moldova", "Romania", "Russian Federation", "San Marino", "Serbia", "Slovakia", "Slovenia", "Spain", "Switzerland", "Sweden", "The former Yugoslav republic of Macedonia", "Ukraine", "United Kingdom of Great Britain and Northern Ireland
+")
+
+south_america <- c("Argentina", "Bolivia (Plurinational State of)", "Brazil", "Chile", "Colombia", "Ecuador", "Guyana", "Paraguay", "Peru", "Suriname", "Uruguay", "Venezuela (Bolivarian Republic of)")
+
+north_america <- c("Antigua and Barbuda", "Bahamas", "Barbados", "Belize", "Canada","Costa Rica", "Cuba", "Dominican Republic", "El Salvador", "Grenada", "Guatemala", "Haiti", "Honduras", "Jamaica", "Mexico", "Nicaragua", "Panama", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines
+", "Trinidad and Tobago", "United States of America")
+
+
+life <- life %>% mutate(continent = ifelse(Country %in% Africa, "Africa",ifelse(Country %in% Asia,"Asia", ifelse(Country %in% Europe, "Europe", ifelse(Country %in% south_america, "South America", ifelse(Country %in% north_america, "North America", "Oceania"))))))
+
+life <- life %>% mutate(continent_factor = factor(continent, levels = c("Africa","Asia","Europe","South America","North America"), labels = c("Africa","Asia","Europe","South America","North America")))
+
+life_summary <- describe(life)
+life_train %>% group_by(continent) %>% summarise(average = mean(adult_mortality))
+life <- na.omit(life)
+life_index <- createDataPartition(life$life_expectancy, p = 0.7, list = FALSE)
+
+life_train <- life[life_index,]
+life_test <- life[-life_index,]
+
+
+
+
+ggplot(life_train, aes(x = continent, y = adult_mortality, col = continent)) + 
+  geom_boxplot(fill="grey") + 
+  geom_jitter() + 
+  ylab("Adult Deaths") + 
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 45)) +
+  ggtitle("Boxplot for adult mortality by continent")
+
+ggplot(life, aes(x = continent, y = infant_deaths, col = continent)) + 
+  geom_boxplot(fill="grey") + 
+  geom_jitter() + 
+  ylab("Infant Deaths") + 
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 45)) +
+  ggtitle("Boxplot for Infant Deaths by Continent")
+
+
+
+ggplot(life, aes(x = continent, y = under_five_deaths, col = continent)) + 
+  geom_boxplot(fill="grey") + 
+  geom_jitter() + 
+  ylab("Under Five Deaths") + 
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 45)) +
+  ggtitle("Boxplot for under five deaths by continent")
+
+
+
+
+
+#Box
+
+
+
+
+
+#Scatter
+ggplot(life, aes(y = adult_mortality, x = Polio, color = continent)) + 
+  geom_point(stat = "identity", position = "jitter") + 
+  geom_smooth( method = "lm")  + 
+  xlab("Adult Mortality") + 
+  ylab("Polio")
+
+ggplot(life, aes(y = infant_deaths, x = Polio, color = continent)) + 
+  geom_point(stat = "identity", position = "jitter") + 
+  geom_smooth( method = "lm")  + 
+  xlab("Infant Deaths") + 
+  ylab("Polio")
+
+
+ggplot(life, aes(y = adult_mortality, x = Diphtheria, color = continent)) + 
+  geom_point(stat = "identity", position = "jitter") + 
+  geom_smooth( method = "lm")  + 
+  xlab("Adult Mortality") + 
+  ylab("Diphtheria")
+
+ggplot(life, aes(y = infant_deaths, x = Diphtheria, color = continent)) + 
+  geom_point(stat = "identity", position = "jitter") + 
+  geom_smooth( method = "lm")  + 
+  xlab("Infant Deaths") + 
+  ylab("Diphtheria")
+
+ggplot(life, aes(y = adult_mortality, x = Measles, color = continent)) + 
+  geom_point(stat = "identity", position = "jitter") + 
+  geom_smooth( method = "lm")  + 
+  xlab("Adult Mortality") + 
+  ylab("Measles")
+
+ggplot(life, aes(y = infant_deaths, x = Measles, color = continent)) + 
+  geom_point(stat = "identity", position = "jitter") + 
+  geom_smooth( method = "lm")  + 
+  xlab("Infant Deaths") + 
+  ylab("Measles")
+
+
+
+
 ```
 
-## Including Plots
+## Graphical Summaries
 
-You can also embed plots, for example:
+
+```{r}
+life_summary <- describe(life)
+life_train %>% group_by(continent) %>% summarise(average = mean(adult_mortality), median = median(adult_mortality), sd = sd(adult_mortality))
+
+life_train %>% group_by(continent) %>% summarise(average = mean(infant_deaths), median = median(infant_deaths), sd = sd(infant_deaths))
+
+life_train %>% group_by(continent) %>% summarise(average = mean(under_five_deaths), median = median(under_five_deaths), sd = sd(under_five_deaths))
+
+measles_life <- describe(life$Measles)
+hiv_life <- describe(life$hiv_aids)
+Diphtheria_life <- describe(life$Diphtheria)
+Polio_life <- describe(life$Polio)
+```
+
+
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+life_analysis <- life_train %>% select(adult_mortality,life_expectancy, Measles, hepatitis, BMI, Polio, Diphtheria)
+
+test_life_analysis <- life_analysis %>% mutate(dead_adult = ifelse(adult_mortality>1, 1,0))
+fitLASSO <- train(life_expectancy ~ ., data = life_analysis,
+method = "lasso",
+preProcess = c("center", "scale"),
+trControl = trainControl(method = "cv", number = 10)
+)
+predLASSO <- predict(fitLASSO, newdata = life_test)
+m1<-postResample(predLASSO, obs = life_test$life_expectancy)
+m1
+
+
+
+fit_forest <- train(life_expectancy ~ ., data = life_analysis, method = "rf",trControl = trainControl(method = "repeatedcv" , number = 5, repeats = 3),preProcess = c("center", "scale"),tuneGrid = data.frame(mtry = c(1:5)))
+pred_forest <- predict(fit_forest, newdata = life_test)
+m4<-postResample(pred_forest, life_test$life_expectancy)
+m4
+
+
+fit_bag <- train(life_expectancy ~ ., data = life_analysis, method = "treebag",trControl = trainControl(method = "cv" , number = 10),preProcess = c("center", "scale"),mtry = c(1:5))
+pred_bag <- predict(fit_bag, newdata = life_test)
+m4<-postResample(pred_bag, life_test$life_expectancy)
+m4
+
+
+fit_forward <- train(life_expectancy ~., data = life_analysis,  method = "leapForward", preProcess = c("center", "scale"),trControl = trainControl(method = "cv", number = 10))
+fit_forward_prediction <- predict(fit_forward, newdata = life_test)
+m3<-postResample(fit_forward_prediction, life_test$life_expectancy)
+m3
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
