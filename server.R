@@ -51,6 +51,7 @@ shinyServer(function(input, output) {
     df_choices <- list(x = input$x_variable,y = input$y_variable, group = input$group, color = input$color)
   })
   
+  #initializes variables for box and scatterplot.
   output$expPlot <- renderPlot({
     df_plot <- get_choices()
     
@@ -74,6 +75,7 @@ shinyServer(function(input, output) {
     cont_plot
   })
   
+  #Declares table subsetted by continent.
   output$continentTable <- renderTable({
     tab_continent <- table(new_life$continent)
     tab_continent
@@ -85,11 +87,13 @@ shinyServer(function(input, output) {
     graph
   })
   
+  #Declares table subsetted by country.
   output$countryTable <- renderTable({
     tab_country <- table(new_life$Country)
     tab_country
   })
   
+  #Shows formulas for regression models.
   output$ex1 <- renderUI({
     withMathJax(
       helpText("The  linear regression equation is as follows: $$Y= b_0+b_1X_1+b_2X_2+...+ b_kX_k $$")
