@@ -1,10 +1,10 @@
 # Final-Project
 
-Purpose:
+## Purpose:
 
 This app looks at life expectancy data from Kaggle to see how life expectancy and mortality rates are impacted by different predictors.
 
-Packages needed:
+## Packages needed:
 
 library(shiny)
 library(tidyverse)
@@ -22,7 +22,7 @@ library(dplyr)
 
 
 
-Installing:
+## Installing:
 
 install.packages(shiny)
 install.packages(tidyverse)
@@ -38,5 +38,5 @@ install.packages(DT)
 install.packages(caret)
 install.packages(dplyr)
 
-Run App Code
+## Run App Code
 runGitHub("Final-Project", "RichardXiao1")
