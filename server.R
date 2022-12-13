@@ -81,6 +81,8 @@ shinyServer(function(input, output) {
     tab_continent
   })
   
+  
+  
   output$countryPlot <- renderPlot({
     graph <- ggplot(new_life, aes(x = Country)) +
       geom_bar(fill = "steelblue") 
@@ -93,7 +95,32 @@ shinyServer(function(input, output) {
     tab_country
   })
   
-  #Shows formulas for regression models.
+  output$measlesPlot <- renderPlot({
+    graph <- ggplot(new_life, aes(x = Measles)) +
+      geom_bar(fill = "steelblue") 
+    graph
+  })
+  
+  #Declares table subsetted by measles.
+  output$measlesTable <- renderTable({
+    tab_measles <- table(new_life$Measles)
+    tab_measles
+  })
+  
+  output$polioPlot <- renderPlot({
+    graph <- ggplot(new_life, aes(x = Polio)) +
+      geom_bar(fill = "steelblue") 
+    graph
+  })
+  
+  #Declares table subsetted by polio
+  output$polioTable <- renderTable({
+    tab_polio <- table(new_life$Polio)
+    tab_polio
+  })
+  
+  
+  
   output$ex1 <- renderUI({
     withMathJax(
       helpText("The  linear regression equation is as follows: $$Y= b_0+b_1X_1+b_2X_2+...+ b_kX_k $$")
