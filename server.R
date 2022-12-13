@@ -1,6 +1,6 @@
 #Final Project 
 #Richard Xiao
-#
+
 
 library(shiny)
 library(tidyverse)
@@ -15,6 +15,7 @@ library(corrr)
 library(DT)
 library(caret)
 library(dplyr)
+#initialization and data preparation
 trctrl <- trainControl(method = "cv" , number = 5)
 life <-read_csv("C:/Users/richa/OneDrive/Documents/ST 558/Final Project/Final-Project/Life Expectancy Data.csv")
 life <- life %>% rename(life_expectancy = `Life expectancy`, adult_mortality = `Adult Mortality`, infant_deaths = `infant deaths`, under_five_deaths = `under-five deaths`, hepatitis = `Hepatitis B`, hiv_aids = `HIV/AIDS`)
