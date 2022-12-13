@@ -22,13 +22,12 @@ summary <- describe(life)
 
 ```
 
-## R Markdown
+## Life Analysis
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+For this project, I am taking a look at how various factors affect mortality rates and life expectancy.
 
 ```{r cars}
+#Cleaning up the life data set.
 life <- life %>% rename(life_expectancy = `Life expectancy`, adult_mortality = `Adult Mortality`, infant_deaths = `infant deaths`, under_five_deaths = `under-five deaths`, hepatitis = `Hepatitis B`, hiv_aids = `HIV/AIDS`)
 
 Africa <-  c("Algeria","Angola", "Benin","Botswana", "Burkina Faso", "Central African Republic", "Burundi", "Côte d'Ivoire", "Cabo Verde", "Cameroon", "Chad", "Comoros", "Congo", "Democratic Republic of the Congo", "Djibouti", "Egypt", "Equatorial Guinea","Eritrea", "Gabon", "Gambia", "Ghana", "Guinea", "Guinea-Bissau", "Kenya", "Lesotho", "Liberia", "Libya", "Madagascar", "Malawi", "Mali", "Mauritania", "Mauritius", "Morocco", "Mozambique", "Namibia", "Niger", "Nigeria", "Rwanda", "Sao Tome and Principe", "Somalia", "Senegal", "Seychelles", "Sierra Leone", "South Africa
@@ -58,7 +57,7 @@ life_train <- life[life_index,]
 life_test <- life[-life_index,]
 
 
-
+#Boxplot
 
 ggplot(life_train, aes(x = continent, y = adult_mortality, col = continent)) + 
   geom_boxplot(fill="grey") + 
@@ -90,7 +89,7 @@ ggplot(life, aes(x = continent, y = under_five_deaths, col = continent)) +
 
 
 
-#Box
+#Boxplots for mortality
 
 
 
@@ -139,7 +138,7 @@ ggplot(life, aes(y = infant_deaths, x = Measles, color = continent)) +
 
 ```
 
-## Graphical Summaries
+## Graphical summaries
 
 
 ```{r}
