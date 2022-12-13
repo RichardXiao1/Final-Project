@@ -1,6 +1,6 @@
 #Project Final
 #Richard Xiao
-#
+
 
 library(shiny)
 library(shiny)
@@ -11,8 +11,8 @@ library(shinycssloaders)
 library(dplyr)
 
 
-# Define UI for application that draws a histogram
-ui <- dashboardPage(skin = "midnight",
+
+ui <- dashboardPage(skin = "blue",
                     
                     dashboardHeader(title="Final Project: Life Expectancy and Mortality Rates  Dashboard",titleWidth=1000),
                     
